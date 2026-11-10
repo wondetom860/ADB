@@ -1,0 +1,14 @@
+<?php 
+
+                        $passphrase = "";
+                        $jsonData = serialize(signature);
+
+                        $passphrase = is_null($passphrase)?\Yii::$app->params['pass']['pass']:$passphrase;
+                        $iv = substr(md5("\x1B\x3C\x58".$passphrase,true), 0 , 16);
+                        $key = substr(md5("\x2D\xFC\xD8".$passphrase,true).md5("\x2D\xFC\xD9".$passphrase,true), 0,24);
+
+                        $cText = openssl_encrypt($jsonData, "AES-128-CBC", $key, 0 , $iv);
+
+                        var_dump($cText);
+
+                         ?>

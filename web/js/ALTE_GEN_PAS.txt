@@ -1,0 +1,38 @@
+if (is_string($key) && strlen($key) > 0) {
+	$this->_identity_key = $key;
+}else{
+	if(file_exists($this->filenameP)){
+
+		$passphrase = \Yii::$app->params['pass']['pass'];
+		try{
+			$file = fopen($this->filenameP, 'rb');
+			$fileData = fread($file, filesize($this->filenameP));
+			fclose($file);
+
+			$iv = substr(md5("\x1B\x3C\x58".$passphrase,true), 0 , 16);
+			$key = substr(md5("\x2D\xFC\xD8".$passphrase,true).md5("\x2D\xFC\xD9".$passphrase,true), 0,24);
+
+			$encryptedData = openssl_encrypt($fileData, 'AES-256-CBC', $key , 0 , $iv);
+
+			$fp = fopen($this->filenameE, 'wb');
+			fwrite($fp,$encryptedData);
+			fclose($fp);
+
+		}catch(\Exception $e){
+			throw new \yii\web\NotFoundHttpException("System is in trouble of finding such file, Any Change made to SYTEM_DIRECTORY? system_directory_file_altered!", 1);
+		}
+	}else{
+		throw new \yii\web\NotFoundHttpException("File Doesn't Exists!!. Removed Any file from SYTEM_DIRECTORY? system_directory_file_altered!", 1);
+	}
+}
+
+/*
+
+{
+ 	"1":"2018_19_WT_DEC_23_04_1993_TOMA",
+ 	"2":"08-07-2019",
+ 	"3":"12Hr",
+ 	"4":"TOMA_1993_04_23_CED_WT" 
+}
+
+*/

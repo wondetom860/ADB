@@ -1,0 +1,1018 @@
+
+<HTML>
+
+<HEAD>
+  <TITLE> Basic COCOMO Model </TITLE> 
+  <base target="_self">
+</HEAD>
+  
+<BODY BGCOLOR = "#FFFFCC">
+  <center>
+  <SCRIPT LANGUAGE = "JavaScript">
+  <!--
+    //    document.write("<HR>");
+    //  This function is used to reset all fields.
+    function clearStatus() { status = ""; }
+
+    //  The following functions are ro initialize all fields.
+    function promptFactor() { status = "Factor";}
+    function promptLanguage() { status = "Language";}
+    function promptType() { status = "Type";}
+    function promptQ1() { status = "Q1";}
+    function promptQ2() { status = "Q2";}
+    function promptQ3() { status = "Q3";}
+    function promptQ4() { status = "Q4";}
+    function promptQ5() { status = "Q5";}
+    function promptQ6() { status = "Q6";}
+    function promptQ7() { status = "Q7";}
+    function promptQ8() { status = "Q8";}
+    function promptQ9() { status = "Q9";}
+    function promptQ10() { status = "Q10";}
+    function promptQ11() { status = "Q11";}
+    function promptQ12() { status = "Q12";}
+    function promptQ13() { status = "Q13";}
+    function promptQ14() { status = "Q14";}
+
+    // This functin will be used when user have more than one option to choose such as the radio 
+    // buttons.  It will take a field and return the value of that field.
+    function getValue(field) 
+    {
+	for (i=0;i<field.length;i++) 
+        {
+    	   if (field[i].checked) return Number(field[i].value);
+        }
+	return 0;
+    }
+        
+    //  This finction is used to round numbers.  It will take two parameters: value and precision.
+    //  It will round that value to that precision.
+    function roundOff(value, precision)
+    {
+        value = "" + value //convert value to string
+        precision = parseInt(precision);
+
+        var whole = "" + Math.round(value * Math.pow(10, precision));
+        var decPoint = whole.length - precision;
+
+        if(decPoint != 0)
+        {
+           result = whole.substring(0, decPoint);
+           result += ".";
+           result += whole.substring(decPoint, whole.length);
+        }
+        else  {
+                result = whole;
+              }
+        return result;
+    }
+    
+    //  This function is used to show the total of weighting (the 14 questions.)
+    function showWeightingTotal()
+    {    
+        
+	var Total = 0
+        //  get the first value of the first question.
+	Total = getValue(document.calculateForm.Q1Field)
+
+        //  add values of each question to the the previous total
+	Total = Total + getValue(document.calculateForm.Q2Field)
+	Total = Total + getValue(document.calculateForm.Q3Field)
+	Total = Total + getValue(document.calculateForm.Q4Field)
+	Total = Total + getValue(document.calculateForm.Q5Field)
+        Total = Total + getValue(document.calculateForm.Q6Field)
+	Total = Total + getValue(document.calculateForm.Q7Field)
+	Total = Total + getValue(document.calculateForm.Q8Field)
+	Total = Total + getValue(document.calculateForm.Q9Field)
+        Total = Total + getValue(document.calculateForm.Q10Field)
+	Total = Total + getValue(document.calculateForm.Q11Field)
+	Total = Total + getValue(document.calculateForm.Q12Field)
+	Total = Total + getValue(document.calculateForm.Q13Field)
+	Total = Total + getValue(document.calculateForm.Q14Field)
+
+        //  store total on the total field.
+	document.calculateForm.total.value = roundOff(Total,2);
+    }
+
+    //  This function is to check if the input entered is integer.
+    function isInt(string)
+    {
+        var val = parseInt(string);
+        return(val >= 0);  
+    }
+
+    // This function will count the total of the first table which is total of the measurement parameter values
+    //  which will be used to calculate the function point 
+    function showCountTotal()
+    {
+	var factor = 0
+        var language = 0
+        var Total1 = 0
+        var i = 0
+        var j = 0
+        var k = 0
+        var l = 0
+        var m = 0
+	factor = getValue(document.calculateForm.FactorField)
+        //  this if is to check if the user forgot to check a weighting factor and he/she will see an alert message.        
+        if (factor == 0)
+           {  alert("You must select a weighting factor.");}
+        //  The next if statements are to check if user inputs are valid which it should be integers
+        else { var count1 = document.calculateForm.inputs;
+               if (!isInt(count1.value))
+               {
+                  alert("Number of user inputs must be integer.");
+                  document.calculateForm.inputs.focus();
+                  return (false);
+               }  
+               var count2 = document.calculateForm.outputs;
+               if (!isInt(count2.value))
+               {
+                  alert("Number of user outputs must be integer.");
+                  document.calculateForm.outputs.focus();
+                  return (false);
+               } 
+               var count3 = document.calculateForm.inquiries;
+               if (!isInt(count3.value))
+               {
+                  alert("Number of Inquiries must be integer.");
+                  document.calculateForm.inquiries.focus();
+                  return (false);
+               } 
+               var count4 = document.calculateForm.files;
+               if (!isInt(count4.value))
+               {
+                  alert("Number of files must be integer.");
+                  document.calculateForm.files.focus();
+                  return (false);
+               } 
+               var count5 = document.calculateForm.interfaces;
+               if (!isInt(count5.value))
+               {
+                  alert("Number of external interfaces must be integer.");
+                  document.calculateForm.interfaces.focus();
+                  return (false);
+               } 
+               //  calculations when user choose simple weighting factor
+               if (factor == 1)
+               {  
+                  i = Number(document.calculateForm.inputs.value);
+                  j = Number(document.calculateForm.outputs.value);
+                  k = Number(document.calculateForm.inquiries.value);
+                  l = Number(document.calculateForm.files.value);
+                  m = Number(document.calculateForm.interfaces.value);
+                  document.calculateForm.tinputs.value = roundOff(i * 3,2)
+                  document.calculateForm.toutputs.value = roundOff(j * 4,2)
+                  document.calculateForm.tinquiries.value = roundOff(k * 3,2)
+                  document.calculateForm.tfiles.value = roundOff(l * 7,2)
+                  document.calculateForm.tinterfaces.value = roundOff(m * 5,2)
+                  Total1 = i * 3 + j * 4 + k * 3 + l * 7 + m * 5
+                  document.calculateForm.total1.value = roundOff(Total1,2);
+               }
+              // calculation when user choose average weighting factor
+               else if (factor == 2)
+                   {
+                     i = Number(document.calculateForm.inputs.value);
+                     j = Number(document.calculateForm.outputs.value);
+                     k = Number(document.calculateForm.inquiries.value);
+                     l = Number(document.calculateForm.files.value);
+                     m = Number(document.calculateForm.interfaces.value);
+                     document.calculateForm.tinputs.value = roundOff(i * 4,2)
+                     document.calculateForm.toutputs.value = roundOff(j * 5,2)
+                     document.calculateForm.tinquiries.value = roundOff(k * 4,2)
+                     document.calculateForm.tfiles.value = roundOff(l * 10,2)
+                     document.calculateForm.tinterfaces.value = roundOff(m * 7,2)
+                     Total1 = i * 4 + j * 5 + k * 4 + l * 10 + m * 7
+                     document.calculateForm.total1.value = roundOff(Total1,2);
+                  }
+                 // calculation when user choose teh complex weighting factor
+                  else if (factor == 3)
+                       {
+                           i = Number(document.calculateForm.inputs.value);
+                           j = Number(document.calculateForm.outputs.value);
+                           k = Number(document.calculateForm.inquiries.value);
+                           l = Number(document.calculateForm.files.value);
+                           m = Number(document.calculateForm.interfaces.value);
+                           document.calculateForm.tinputs.value = roundOff(i * 6,2)
+                           document.calculateForm.toutputs.value = roundOff(j * 7,2)
+                           document.calculateForm.tinquiries.value = roundOff(k * 6,2)
+                           document.calculateForm.tfiles.value = roundOff(l * 15,2)
+                           document.calculateForm.tinterfaces.value = roundOff(m * 10,2)
+                           Total1 = i * 6 + j * 7 + k * 6 + l * 15 + m * 10
+                           document.calculateForm.total1.value = roundOff(Total1,2);
+                      }
+             }
+    }
+
+  
+    function unfocus_tinputs() { document.calculateForm.outputs.focus(); }
+    function unfocus_toutputs() { document.calculateForm.inquiries.focus(); }
+    function unfocus_tinquiries() { document.calculateForm.files.focus(); }
+    function unfocus_tfiles() { document.calculateForm.interfaces.focus(); }
+    function unfocus_tinterfaces() { document.calculateForm.countTotal.focus(); }
+    function unfocus_total1() { document.calculateForm.countTotal.focus(); }
+    function unfocus_total() { document.calculateForm.showTotalWeight.focus(); }
+    function unfocus_fpTotal() { document.calculateForm.FP.focus(); }
+    function unfocus_LOCTotal() { document.calculateForm.LOCFP.focus(); }
+    function unfocus_Effort() { document.calculateForm.calculate.focus(); }
+    function unfocus_Duration() { document.calculateForm.calculate.focus();}
+    
+    // This function will calculate the function points based on the teh results form teh previous two tables
+    function showFP()
+    {
+         var totalfp = 0
+         showCountTotal();
+         showWeightingTotal();
+         totalfp = Number(document.calculateForm.total1.value) * (0.65 + 0.01 * Number(document.calculateForm.total.value))
+         document.calculateForm.fpTotal.value = roundOff(totalfp, 2);
+    }
+   
+    // This function will calculate the Lines of code (LOC)
+    function showLOC()
+    {
+       var language = 0
+       var loc = 0
+       showFP();
+       language = getValue(document.calculateForm.LanguageField)
+       //  This is to check if user selected a language or not.         
+       if (language == 0) {  alert("You must select a Language");}
+       else {
+                loc = language * Number(document.calculateForm.fpTotal.value);
+                // store result in the LOCTotal text box.
+                document.calculateForm.LOCTotal.value = roundOff(loc, 2);
+            }  
+    }
+    //  This fucntion will take the LOC which was calculated in previous step and divided it by 1000 and then 
+    //  takes values from table with selected project type and apply them to the eqations.  
+    //  Final results will be stored in the Efort and Duartion text boxes
+    function showE()
+    {
+        var E = 0
+        var D = 0
+        var type = 0
+        showLOC();
+        type = getValue(document.calculateForm.typeField)
+        if (type == 0) {  alert("You must select a project type.");}
+         else if (type == 1)
+              {
+                 E = 2.4 * Math.pow((Number(document.calculateForm.LOCTotal.value)/1000),1.05);
+                 D = 2.5 * Math.pow(E,0.38);
+                 document.calculateForm.Effort.value = roundOff(E, 2);
+                 document.calculateForm.Duration.value = roundOff(D, 2);
+              }
+              else  if (type == 2)
+                    {
+                    E = 3.0 * Math.pow((Number(document.calculateForm.LOCTotal.value)/1000),1.12);
+                    D = 2.5 * Math.pow(E,0.35);
+                    document.calculateForm.Effort.value = roundOff(E, 2);
+                    document.calculateForm.Duration.value = roundOff(D, 2);
+                    }
+                    else if (type == 3)
+                         {
+                     E = 3.6 * Math.pow((Number(document.calculateForm.LOCTotal.value)/1000),1.20);
+                     D = 2.5 * Math.pow(E,0.32);
+                     document.calculateForm.Effort.value = roundOff(E, 2);
+                     document.calculateForm.Duration.value = roundOff(D, 2);
+                         }
+        document.calculateForm.Reset.focus();
+    }
+  
+  // -->
+  // End of JavaScript code
+  </SCRIPT>
+  </center>
+  
+  <!-- This is the first heading which is the first step users need to do the calculation.
+    The next few lines of code shows the properties of the first heading. 
+   -->
+  <H2 > 
+  <font size="6"> <b> <i> 
+  <font color="#0000FF" face="Andy"> Step 1:</font> </i></b>
+  </font>
+  <font color="#0000FF" size="3">You have to compute the count-total which will be used to define 
+        the complexity of a project. You will do that by completing the table below:
+  </font> 
+  </H2>
+  
+  <center>
+  <!--  Naming the form.
+    -->
+  <FORM Name="calculateForm" >
+
+  <font color="#0000FF" size="5"> <b> Information Domain Values</b></font> 
+  <!-- Creating the first table and its properties
+    -->
+  <TABLE BORDER = 1 BGCOLOR="#FFFFCC" width="680" bordercolor="#FFFF00">
+    <TR BGCOLOR="BLACK">
+      <TH width="216" bordercolor="#FFFF00" bgcolor="#00FFFF"> <font color="#0000FF">Measurement Parameter</font>
+      <TH width="55" bordercolor="#FFFF00" bgcolor="#00FFFF"> <font color="#0000FF">Count</font>
+      <TH width="37" bordercolor="#FFFF00" bgcolor="#00FFFF"> &nbsp;
+      <TH width="56" bordercolor="#FFFF00" bgcolor="#00FFFF"> <font color="#0000FF">Simple
+        <span style="background-color: #00FFFF">
+           <INPUT TYPE = "RADIO" NAME = "FactorField" value="1" onFocus = "promptFactor()"
+	    onBlur = "clearStatus()">
+        </span></font>
+      <TH width="65" bordercolor="#FFFF00" bgcolor="#00FFFF"> <font color="#0000FF">Average
+           <INPUT TYPE = "RADIO" NAME = "FactorField" value="2"  onFocus = "promptFactor()"
+	    onBlur = "clearStatus()">
+        </font>
+      <TH width="75" bordercolor="#FFFF00" bgcolor="#00FFFF"> <font color="#0000FF">Complex
+           <INPUT TYPE = "RADIO" NAME = "FactorField" value="3" onFocus = "promptFactor()"
+	    onBlur = "clearStatus()">
+        </font>
+      <TH width="43" bordercolor="#FFFF00" bgcolor="#00FFFF"> &nbsp;
+      <TH width="81" bordercolor="#FFFF00" bgcolor="#00FFFF"> <font color="#0000FF">Total</font>
+        
+    <TR><TD width="216" bordercolor="#FFFF00" align="left">
+        <font color="#0000FF"><b>&nbsp;Number of user inputs</b></font>
+        <TD width="55" bordercolor="#FFFF00" align="center"><font color="#0000FF"><b>
+         <INPUT TYPE = "TEXT" NAME = "inputs" value="" size = 5 onFocus = "promptFactor()"
+	     onBlur = "clearStatus()">
+        </b></font>
+        <TD width="37" bordercolor="#FFFF00" align="center"><font color="#0000FF"><b>X</b></font>
+        <TD width="56" bordercolor="#FFFF00" align="center"><font color="#0000FF"><b>3</b></font>
+        <TD width="65" bordercolor="#FFFF00" align="center"><font color="#0000FF"><b>4</b></font>
+        <TD width="75" bordercolor="#FFFF00" align="center"><font color="#0000FF"><b>6</b></font>
+        <TD width="43" bordercolor="#FFFF00" align="center"><font color="#0000FF"><b>=</b></font>
+        <TD width="81" bordercolor="#FFFF00" align="center"><font color="#0000FF"><b>
+           <INPUT TYPE = "TEXT" NAME = "tinputs" value="" size = 5 onfocus="return unfocus_tinputs()">
+           </b></font>
+
+    <TR><TD width="216" bordercolor="#FFFF00" align="left"><font color="#0000FF"><b>&nbsp;
+        Number of user outputs</b></font>
+        <TD width="55" bordercolor="#FFFF00" align="center"><font color="#0000FF"><b>
+          <INPUT TYPE = "TEXT" NAME = "outputs" value="" size = 5 onFocus = "promptFactor()"
+	    onBlur = "clearStatus()">
+          </b></font>
+        <TD width="37" bordercolor="#FFFF00" align="center"><font color="#0000FF"><b>X</b></font>
+        <TD width="56" bordercolor="#FFFF00" align="center"><font color="#0000FF"><b>4</b></font>
+        <TD width="65" bordercolor="#FFFF00" align="center"><font color="#0000FF"><b>5</b></font>
+        <TD width="75" bordercolor="#FFFF00" align="center"><font color="#0000FF"><b>7</b></font>
+        <TD width="43" bordercolor="#FFFF00" align="center"><font color="#0000FF"><b>=</b></font>
+        <TD width="81" bordercolor="#FFFF00" align="center"><font color="#0000FF"><b>
+          <INPUT TYPE = "TEXT" NAME = "toutputs" value="" size = 5 onfocus="return unfocus_toutputs()">
+          </b></font>
+
+    <TR><TD width="216" bordercolor="#FFFF00" align="left"><font color="#0000FF"><b>&nbsp;
+        Number of user inquiries</b></font>
+        <TD width="55" bordercolor="#FFFF00" align="center"><font color="#0000FF"><b>
+          <INPUT TYPE = "TEXT" NAME = "inquiries" value="" size = 5 onFocus = "promptFactor()"
+	    onBlur = "clearStatus()">
+          </b></font>
+        <TD width="37" bordercolor="#FFFF00" align="center"><font color="#0000FF"><b>X</b></font>
+        <TD width="56" bordercolor="#FFFF00" align="center"><font color="#0000FF"><b>3</b></font>
+        <TD width="65" bordercolor="#FFFF00" align="center"><font color="#0000FF"><b>4</b></font>
+        <TD width="75" bordercolor="#FFFF00" align="center"><font color="#0000FF"><b>6</b></font>
+        <TD width="43" bordercolor="#FFFF00" align="center"><font color="#0000FF"><b>=</b></font>
+        <TD width="81" bordercolor="#FFFF00" align="center"><font color="#0000FF"><b>
+          <INPUT TYPE = "TEXT" NAME = "tinquiries" value="" size = 5 onfocus="return unfocus_tinquiries()"> 
+          </b></font>
+
+    <TR><TD width="216" bordercolor="#FFFF00" align="left"><font color="#0000FF"><b>&nbsp;
+        Number of files</b></font>
+        <TD width="55" bordercolor="#FFFF00" align="center"><font color="#0000FF"><b>
+          <INPUT TYPE = "TEXT" NAME = "files" value="" size = 5 onFocus = "promptFactor()"
+	    onBlur = "clearStatus()">
+          </b></font>
+        <TD width="37" bordercolor="#FFFF00" align="center"><font color="#0000FF"><b>X</b></font>
+        <TD width="56" bordercolor="#FFFF00" align="center"><font color="#0000FF"><b>7</b></font>
+        <TD width="65" bordercolor="#FFFF00" align="center"><font color="#0000FF"><b>10</b></font>
+        <TD width="75" bordercolor="#FFFF00" align="center"><font color="#0000FF"><b>15</b></font>
+        <TD width="43" bordercolor="#FFFF00" align="center"><font color="#0000FF"><b>=</b></font>
+        <TD width="81" bordercolor="#FFFF00" align="center"><font color="#0000FF"><b>
+          <INPUT TYPE = "TEXT" NAME = "tfiles" value="" size = 5 onfocus="return unfocus_tfiles()"> 
+          </b></font>
+
+    <TR><TD width="216" bordercolor="#FFFF00" align="left"><font color="#0000FF"><b>&nbsp;
+        Number of external interfaces</b></font>
+        <TD width="55" bordercolor="#FFFF00" align="center"><font color="#0000FF"><b>
+          <INPUT TYPE = "TEXT" NAME = "interfaces" value="" size = 5 onFocus = "promptFactor()"
+	    onBlur = "clearStatus()">
+          </b></font>
+        <TD width="37" bordercolor="#FFFF00" align="center"><font color="#0000FF"><b>X</b></font>
+        <TD width="56" bordercolor="#FFFF00" align="center"><font color="#0000FF"><b>5</b></font>
+        <TD width="65" bordercolor="#FFFF00" align="center"><font color="#0000FF"><b>7</b></font>
+        <TD width="75" bordercolor="#FFFF00" align="center"><font color="#0000FF"><b>10</b></font>
+        <TD width="43" bordercolor="#FFFF00" align="center"><font color="#0000FF"><b>=</b></font>
+        <TD width="81" bordercolor="#FFFF00" align="center"><font color="#0000FF"><b>
+          <INPUT TYPE = "TEXT" NAME = "tinterfaces" value="" size = 5 onfocus="return unfocus_tinterfaces()">
+          </b></font>
+
+    <TR><TD width="216" bordercolor="#FFFF00" align="left"><font color="#0000FF"><b>&nbsp;
+        Count=Total</b></font>
+        <TD width="55" bordercolor="#FFFF00" align="center">
+        <TD width="37" bordercolor="#FFFF00" align="center">
+        <TD width="56" bordercolor="#FFFF00" align="center">
+        <TD width="65" bordercolor="#FFFF00" align="center">
+        <TD width="75" bordercolor="#FFFF00" align="center">
+        <TD width="43" bordercolor="#FFFF00" align="center">
+        <TD width="81" bordercolor="#FFFF00" align="center"><font color="#0000FF"><b>
+          <INPUT TYPE = "TEXT" VALUE = "" NAME = "total1" size = 10 onfocus="return unfocus_total1()">
+          </b></font>
+   <!-- closing the table
+     -->
+   </TABLE>
+  </center>
+  
+  <center>
+  <P>
+  <center>
+  &nbsp;&nbsp;&nbsp;&nbsp <font color="#0000FF"><b>
+  <!-- a button which the user will click to get the count total value from the table.
+    -->
+  <INPUT TYPE = "BUTTON" Name="countTotal" VALUE = "Count Total" onClick = "showCountTotal()">
+  </b></font>
+  </center>
+
+  <BR>
+  </center>
+  <!-- Starting the second step
+    -->
+  <H2 align="left"> <font face="Andy" size="6" color="#0000FF"><b><i> Step 2:</i></b></font>&nbsp;
+  <font size="3" color="#0000FF">
+  <b>You have to find the complexity adjustment values based on responses to the questions below:</b>
+  </font> 
+  </H2>
+  
+  <center>
+  <font color="#003399">
+  <H> <b>Complexity Weighting Factors <H>
+  <BR>
+  // heading of the second table
+  <H> Rate each factor on a scale of 0 to 5: 
+     <BR> (0 = No influence,&nbsp;&nbsp; 1 = Incidental,&nbsp;&nbsp; 2 = Moderate,&nbsp;&nbsp;
+          3 = Average,&nbsp;&nbsp; 4 = Significant,&nbsp;&nbsp; 5 = Essential): <H>
+  </b>
+  <BR>
+  </font>
+  
+  <!-- Creating the second table with its properties
+       There is 14 questions (row) on the table and each one has the same properties.
+    -->
+  <TABLE BORDER = 1 BGCOLOR="#FFFFCC" bordercolor="#FFFF00" width="902" height="380">
+    <TR BGCOLOR="BLACK">
+      <TH style="background-color: #00FFFF" width="727" align="left" height="1"> <font color="#0000FF"><b>&nbsp;
+        Question</b></font>
+      <TH style="background-color: #00FFFF" width="20" align="center" height="1"> <font color="#0000FF"><b>0</b></font>
+      <TH style="background-color: #00FFFF" width="23" align="center" height="1"> <font color="#0000FF"><b>1</b></font>
+      <TH style="background-color: #00FFFF" width="24" align="center" height="1"> <font color="#0000FF"><b>2</b></font>
+      <TH style="background-color: #00FFFF" width="21" align="center" height="1"> <font color="#0000FF"><b>3</b></font>
+      <TH style="background-color: #00FFFF" width="22" align="center" height="1"> <font color="#0000FF"><b>4</b></font>   
+      <TH style="background-color: #00FFFF" width="20" align="center" height="1"> <font color="#0000FF"><b>5</b></font>
+       
+    <TR><TD width="727" align="left" height="19"><b><font color="#0000FF">
+        &nbsp; 1. Does the system require reliable backup and recovery?</font></b>
+        <TD width="20" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q1Field" value="0"
+            onFocus = "promptQ1()" onBlur = "clearStatus()" Checked>
+          </font></b>
+        <TD width="23" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q1Field" value="1"
+            onFocus = "promptQ1()" onBlur = "clearStatus()">
+          </font></b>
+
+        <TD width="24" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q1Field" value="2"
+            onFocus = "promptQ1()" onBlur = "clearStatus()">
+          </font></b>
+
+        <TD width="21" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q1Field" value="3"
+            onFocus = "promptQ1()" onBlur = "clearStatus()">
+            </font></b>
+
+        <TD width="22" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q1Field" value="4"
+            onFocus = "promptQ1()" onBlur = "clearStatus()">
+          </font></b>
+
+        <TD width="20" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q1Field" value="5"
+            onFocus = "promptQ1()" onBlur = "clearStatus()">
+            </font></b>
+    <TR><TD width="727" align="left" height="19"><b><font color="#0000FF">&nbsp; 2. Are data communications required?</font></b>
+        <TD width="20" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q2Field" value="0"
+            onFocus = "promptQ2()"  onBlur = "clearStatus()"  Checked>
+          </font></b>
+        <TD width="23" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q2Field" value="1"
+            onFocus = "promptQ2()" onBlur = "clearStatus()">
+          </font></b>
+
+        <TD width="24" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q2Field" value="2"
+            onFocus = "promptQ2()" onBlur = "clearStatus()">
+          </font></b>
+
+        <TD width="21" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q2Field" value="3"
+            onFocus = "promptQ2()" onBlur = "clearStatus()">
+          </font></b>
+
+        <TD width="22" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q2Field" value="4"
+            onFocus = "promptQ2()" onBlur = "clearStatus()">
+          </font></b>
+
+        <TD width="20" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q2Field" value="5"
+            onFocus = "promptQ2()" onBlur = "clearStatus()">
+            </font></b>
+    <TR><TD width="727" align="left" height="19"><b><font color="#0000FF">
+         &nbsp; 3. Are there distributed processing functions?</font></b>
+        <TD width="20" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q3Field" value="0"
+            onFocus = "promptQ3()" onBlur = "clearStatus()" Checked>
+          </font></b>
+        <TD width="23" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q3Field" value="1"
+            onFocus = "promptQ3()" onBlur = "clearStatus()">
+          </font></b>
+
+        <TD width="24" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q3Field" value="2"
+            onFocus = "promptQ3()" onBlur = "clearStatus()">
+          </font></b>
+
+        <TD width="21" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q3Field" value="3"
+            onFocus = "promptQ3()" onBlur = "clearStatus()">
+          </font></b>
+
+        <TD width="22" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q3Field" value="4"
+            onFocus = "promptQ3()" onBlur = "clearStatus()">
+          </font></b>
+
+        <TD width="20" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q3Field" value="5"
+            onFocus = "promptQ3()" onBlur = "clearStatus()">
+          </font></b>
+    <TR><TD width="727" align="left" height="19"><b><font color="#0000FF">&nbsp; 4. Is performance critical?</font></b>
+        <TD width="20" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q4Field" value="0"
+            onFocus = "promptQ4()" onBlur = "clearStatus()" Checked>
+          </font></b>
+        <TD width="23" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q4Field" value="1"
+            onFocus = "promptQ4()" onBlur = "clearStatus()">
+          </font></b>
+
+        <TD width="24" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q4Field" value="2"
+            onFocus = "promptQ4()" onBlur = "clearStatus()">
+          </font></b>
+
+        <TD width="21" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q4Field" value="3"
+            onFocus = "promptQ4()" onBlur = "clearStatus()">
+          </font></b>
+
+        <TD width="22" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q4Field" value="4"
+            onFocus = "promptQ4()" onBlur = "clearStatus()">
+          </font></b>
+
+        <TD width="20" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q4Field" value="5"
+            onFocus = "promptQ4()" onBlur = "clearStatus()">
+          </font></b>
+    <TR><TD width="727" align="left" height="19"><b><font color="#0000FF">&nbsp; 5. Will the
+        system run in an existing, heavily utilized operational environment?</font></b> 
+        <TD width="20" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q5Field" value="0"
+            onFocus = "promptQ5()" onBlur = "clearStatus()" Checked>
+          </font></b>
+        <TD width="23" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q5Field" value="1"
+            onFocus = "promptQ5()" onBlur = "clearStatus()">
+          </font></b>
+
+        <TD width="24" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q5Field" value="2"
+            onFocus = "promptQ5()" onBlur = "clearStatus()">
+          </font></b>
+
+        <TD width="21" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q5Field" value="3"
+            onFocus = "promptQ5()" onBlur = "clearStatus()">
+          </font></b>
+
+        <TD width="22" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q5Field" value="4"
+            onFocus = "promptQ5()" onBlur = "clearStatus()">
+          </font></b>
+
+        <TD width="20" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q5Field" value="5"
+            onFocus = "promptQ5()"  onBlur = "clearStatus()">
+          </font></b>
+    <TR><TD width="727" align="left" height="19"><b><font color="#0000FF">
+          &nbsp; 6. Does the system require on-line data entry?</font></b> 
+        <TD width="20" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q6Field" value="0"
+            onFocus = "promptQ6()" onBlur = "clearStatus()" Checked>
+          </font></b>
+        <TD width="23" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q6Field" value="1"
+            onFocus = "promptQ6()" onBlur = "clearStatus()">
+          </font></b>
+
+        <TD width="24" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q6Field" value="2"
+            onFocus = "promptQ6()" onBlur = "clearStatus()">
+          </font></b>
+
+        <TD width="21" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q6Field" value="3"
+            onFocus = "promptQ6()" onBlur = "clearStatus()">
+          </font></b>
+
+        <TD width="22" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q6Field" value="4"
+            onFocus = "promptQ6()" onBlur = "clearStatus()">
+          </font></b>
+
+        <TD width="20" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q6Field" value="5"
+            onFocus = "promptQ6()" onBlur = "clearStatus()">
+          </font></b>
+    <TR><TD width="727" align="left" height="19"><b><font color="#0000FF">
+         &nbsp; 7. Does the on-line data entry require the input transaction to be built over multiple screens or operations?
+         </font></b>
+        <TD width="20" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q7Field" value="0"
+            onFocus = "promptQ7()"
+	    onBlur = "clearStatus()"
+            Checked>
+          </font></b>
+        <TD width="23" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q7Field" value="1"
+            onFocus = "promptQ7()" onBlur = "clearStatus()">
+          </font></b>
+
+        <TD width="24" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q7Field" value="2"
+            onFocus = "promptQ7()" onBlur = "clearStatus()">
+          </font></b>
+
+        <TD width="21" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q7Field" value="3"
+            onFocus = "promptQ7()" onBlur = "clearStatus()">
+          </font></b>
+
+        <TD width="22" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q7Field" value="4"
+            onFocus = "promptQ7()" onBlur = "clearStatus()">
+          </font></b>
+
+        <TD width="20" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q7Field" value="5"
+            onFocus = "promptQ7()" onBlur = "clearStatus()">
+          </font></b>
+    <TR><TD width="727" align="left" height="19"><b><font color="#0000FF">&nbsp; 8. Are the master file updated on-line?
+         </font></b> 
+        <TD width="20" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q8Field" value="0"
+            onFocus = "promptQ8()" onBlur = "clearStatus()" Checked>
+          </font></b>
+        <TD width="23" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q8Field" value="1"
+            onFocus = "promptQ8()" onBlur = "clearStatus()">
+          </font></b>
+
+        <TD width="24" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q8Field" value="2"
+            onFocus = "promptQ8()" onBlur = "clearStatus()">
+          </font></b>
+
+        <TD width="21" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q8Field" value="3"
+            onFocus = "promptQ8()" onBlur = "clearStatus()">
+          </font></b>
+
+        <TD width="22" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q8Field" value="4"
+            onFocus = "promptQ8()" onBlur = "clearStatus()">
+          </font></b>
+
+        <TD width="20" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q8Field" value="5"
+            onFocus = "promptQ8()" onBlur = "clearStatus()">
+          </font></b>
+
+    <TR><TD width="727" align="left" height="19"><b><font color="#0000FF">&nbsp; 9. Are the inputs, outputs, 
+          files, or inquiries complex?</font></b> 
+        <TD width="20" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q9Field" value="0"
+            onFocus = "promptQ9()" onBlur = "clearStatus()" Checked>
+          </font></b>
+        <TD width="23" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q9Field" value="1"
+            onFocus = "promptQ9()" onBlur = "clearStatus()">
+          </font></b>
+
+        <TD width="24" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q9Field" value="2"
+            onFocus = "promptQ9()" onBlur = "clearStatus()">
+          </font></b>
+
+        <TD width="21" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q9Field" value="3"
+            onFocus = "promptQ9()" onBlur = "clearStatus()">
+          </font></b>
+
+        <TD width="22" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q9Field" value="4"
+            onFocus = "promptQ9()"  onBlur = "clearStatus()">
+          </font></b>
+
+        <TD width="20" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q9Field" value="5"
+            onFocus = "promptQ9()" onBlur = "clearStatus()">
+          </font></b>
+    <TR><TD width="727" align="left" height="19"><b><font color="#0000FF">10. Is the internal processing complex?</font></b>
+        <TD width="20" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q10Field" value="0"
+            onFocus = "promptQ10()" onBlur = "clearStatus()" Checked>
+          </font></b>
+        <TD width="23" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q10Field" value="1"
+            onFocus = "promptQ10()" onBlur = "clearStatus()">
+          </font></b>
+
+        <TD width="24" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q10Field" value="2"
+            onFocus = "promptQ10()" onBlur = "clearStatus()">
+          </font></b>
+
+        <TD width="21" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q10Field" value="3"
+            onFocus = "promptQ10()" onBlur = "clearStatus()">
+          </font></b>
+
+        <TD width="22" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q10Field" value="4"
+            onFocus = "promptQ10()" onBlur = "clearStatus()">
+          </font></b>
+
+        <TD width="20" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q10Field" value="5"
+            onFocus = "promptQ10()" onBlur = "clearStatus()">
+          </font></b>
+    <TR><TD width="727" align="left" height="19"><b><font color="#0000FF">11. In the code designed to be reusable?</font></b> 
+        <TD width="20" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q11Field" value="0"
+            onFocus = "promptQ11()" onBlur = "clearStatus()" Checked>
+          </font></b>
+        <TD width="23" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q11Field" value="1"
+            onFocus = "promptQ11()" onBlur = "clearStatus()">
+          </font></b>
+
+        <TD width="24" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q11Field" value="2"
+            onFocus = "promptQ11()" onBlur = "clearStatus()">
+          </font></b>
+
+        <TD width="21" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q11Field" value="3"
+            onFocus = "promptQ11()" onBlur = "clearStatus()">
+          </font></b>
+
+        <TD width="22" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q11Field" value="4"
+            onFocus = "promptQ11()" onBlur = "clearStatus()">
+          </font></b>
+
+        <TD width="20" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q11Field" value="5"
+            onFocus = "promptQ11()" onBlur = "clearStatus()">
+          </font></b>
+    <TR><TD width="727" align="left" height="19"><b><font color="#0000FF">12. Are conversion and installation included 
+         in the design?</font></b> 
+        <TD width="20" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q12Field" value="0"
+            onFocus = "promptQ12()" onBlur = "clearStatus()" Checked>
+          </font></b>
+        <TD width="23" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q12Field" value="1"
+            onFocus = "promptQ12()" onBlur = "clearStatus()">
+          </font></b>
+
+        <TD width="24" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q12Field" value="2"
+            onFocus = "promptQ12()" onBlur = "clearStatus()">
+          </font></b>
+
+        <TD width="21" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q12Field" value="3"
+            onFocus = "promptQ12()" onBlur = "clearStatus()">
+          </font></b>
+
+        <TD width="22" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q12Field" value="4"
+            onFocus = "promptQ12()" onBlur = "clearStatus()">
+          </font></b>
+
+        <TD width="20" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q12Field" value="5"
+            onFocus = "promptQ12()" onBlur = "clearStatus()">
+          </font></b>
+    <TR><TD width="727" align="left" height="19"><b><font color="#0000FF">13. Is the system designed for multiple 
+        installations in different organizations?</font></b>
+        <TD width="20" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q13Field" value="0"
+            onFocus = "promptQ13()" onBlur = "clearStatus()" Checked>
+          </font></b>
+        <TD width="23" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q13Field" value="1"
+            onFocus = "promptQ13()" onBlur = "clearStatus()">
+          </font></b>
+
+        <TD width="24" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q13Field" value="2"
+            onFocus = "promptQ13()" onBlur = "clearStatus()">
+          </font></b>
+
+        <TD width="21" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q13Field" value="3"
+            onFocus = "promptQ13()" onBlur = "clearStatus()">
+          </font></b>
+
+        <TD width="22" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q13Field" value="4"
+            onFocus = "promptQ13()" onBlur = "clearStatus()">
+          </font></b>
+
+        <TD width="20" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q13Field" value="5"
+            onFocus = "promptQ13()" onBlur = "clearStatus()">
+          </font></b>
+    <TR><TD width="727" align="left" height="19"><b><font color="#0000FF">14. Is the application designed to facilitate 
+        change and ease of use by the user?</font></b>
+        <TD width="20" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q14Field" value="0"
+            onFocus = "promptQ14()" onBlur = "clearStatus()" Checked>
+          </font></b>
+        <TD width="23" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q14Field" value="1"
+            onFocus = "promptQ14()" onBlur = "clearStatus()">
+          </font></b>
+
+        <TD width="24" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q14Field" value="2"
+            onFocus = "promptQ14()" onBlur = "clearStatus()">
+          </font></b>
+
+        <TD width="21" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q14Field" value="3"
+            onFocus = "promptQ14()" onBlur = "clearStatus()">
+          </font></b>
+
+        <TD width="22" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q14Field" value="4"
+            onFocus = "promptQ14()" onBlur = "clearStatus()">
+          </font></b>
+
+        <TD width="20" align="left" height="19"><b><font color="#0000FF"><INPUT TYPE = "RADIO" NAME = "Q14Field" value="5"
+            onFocus = "promptQ14()" onBlur = "clearStatus()" >
+          </font></b>
+    <TR><TD width="727" align="left" height="23"><b><font color="#0000FF">&nbsp;&nbsp;&nbsp;
+        Total &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp 
+                  <INPUT TYPE = "TEXT" VALUE = "" NAME = "total" size = 6 
+                            onfocus="return unfocus_total()">
+        </font></b>
+        <TD width="20" align="left" height="23">
+        <TD width="23" align="left" height="23">
+        <TD width="24" align="left" height="23">
+        <TD width="21" align="left" height="23">
+        <TD width="22" align="left" height="23">
+        <TD width="20" align="left" height="23">
+   <!--  closing the second table       
+     -->
+   </TABLE>
+   
+  <P>
+  <!-- a button which the user will click to get the total values from the second table.
+    -->
+  &nbsp;&nbsp;&nbsp;&nbsp <font color="#0000FF">
+  <INPUT TYPE = "BUTTON" Name="showTotalWeight" VALUE = "Show Total of weighting Factor" 
+         onClick = "showWeightingTotal()">
+  </font>
+  <BR><BR>&nbsp;&nbsp;&nbsp;&nbsp
+
+  <H>  <b><font size="5" color="#0000FF">The Function Points is: </font></b> <H> 
+  <font color="#0000FF"> 
+  <!-- a button which the user will click to get the Function Pioints value based on results form the first two tabgles. 
+    -->
+  <INPUT TYPE = "BUTTON" Name="FP" VALUE = "Show Function Points" onClick = "showFP()">
+  </font> <font color="#0000FF">
+  <INPUT TYPE = "TEXT" VALUE="" NAME = "fpTotal" size = 10 onfocus="return unfocus_fpTotal()">
+  </font>
+  <BR>
+  </center>
+
+  <H2 align="left"> <font face="Andy" size="6" color="#0000FF"><b><i> Step 3: </i></b></font>
+  <b><font size="3" color="#0000FF">  You have to find LOC (Lines of Code), and you do this by 
+      choosing a programming language that you will using when developing a project:</font></b> 
+  </H2>
+  <!-- Creating the third table with its properties
+       Here is a list of languages and LOC assoicated with it. 
+    -->
+  <center>
+    <TABLE BORDER = 1 BGCOLOR="#FFFFCC" bordercolor="#FFFF00" width="471">
+    <TR BGCOLOR="BLACK">
+      <TH style="background-color: #00FFFF" width="272"> <font color="#0000FF"><b>Programming Language</b></font>
+      <TH style="background-color: #00FFFF" align="center" width="126"> 
+           <font color="#0000FF"><b>LOC/FP (average)</b></font>
+      <TH style="background-color: #00FFFF" align="center" width="51"> 
+           <font color="#0000FF"><b>Select</b></font>
+
+    <TR><TD width="272"><font color="#0000FF"><b>&nbsp; Assembly Language</b></font>
+        <TD align="center" width="126"><font color="#0000FF"><b>320</b></font>
+        <TD align="center" width="51"><font color="#0000FF">
+          <b><INPUT TYPE = "RADIO" NAME = "LanguageField" value="320" onFocus = "promptLanguage()" 
+             onBlur = "clearStatus()">
+          </b></font>
+
+    <TR><TD width="272"><font color="#0000FF"><b>&nbsp; C</b></font>
+        <TD align="center" width="126"><font color="#0000FF"><b>128</b></font>
+        <TD align="center" width="51"><font color="#0000FF"><b>
+         <INPUT TYPE = "RADIO" NAME = "LanguageField" value="320" onFocus = "promptLanguage()"
+            	   onBlur = "clearStatus()">
+          </b></font>
+    <TR><TD width="272"><font color="#0000FF"><b>&nbsp; COBOL</b></font>
+        <TD align="center" width="126"><font color="#0000FF"><b>105</b></font>
+        <TD align="center" width="51"><font color="#0000FF"><b>
+          <INPUT TYPE = "RADIO" NAME = "LanguageField" value="105" onFocus = "promptLanguage()"
+            	   onBlur = "clearStatus()">
+          </b></font>
+
+    <TR><TD width="272"><font color="#0000FF"><b>&nbsp; Fortran</b></font>
+       <TD align="center" width="126"><font color="#0000FF"><b>105</b></font>
+        <TD align="center" width="51"><font color="#0000FF"><b>
+          <INPUT TYPE = "RADIO" NAME = "LanguageField" value="105" onFocus = "promptLanguage()"
+            	   onBlur = "clearStatus()">
+          </b></font>
+    <TR><TD width="272"><font color="#0000FF"><b>&nbsp; Pascal</b></font>
+        <TD align="center" width="126"><font color="#0000FF"><b>90</b></font>
+        <TD align="center" width="51"><font color="#0000FF"><b>
+           <INPUT TYPE = "RADIO" NAME = "LanguageField" value="90" onFocus = "promptLanguage()"
+            	   onBlur = "clearStatus()">
+          </b></font>
+
+    <TR><TD width="272"><font color="#0000FF"><b>&nbsp; Ada</b></font>
+        <TD align="center" width="126"><font color="#0000FF"><b>70</b></font>
+        <TD align="center" width="51"><font color="#0000FF"><b>
+           <INPUT TYPE = "RADIO" NAME = "LanguageField" value="70" onFocus = "promptLanguage()"
+            	   onBlur = "clearStatus()">
+          </b></font>
+    <TR><TD width="272"><font color="#0000FF"><b>&nbsp; Object-Oriented Languages</b></font>
+        <TD align="center" width="126"><font color="#0000FF"><b>30</b></font>
+        <TD align="center" width="51"><font color="#0000FF"><b>
+              <INPUT TYPE = "RADIO" NAME = "LanguageField" value="30" onFocus = "promptLanguage()"
+            	   onBlur = "clearStatus()">
+          </b></font>
+
+    <TR><TD width="272"><font color="#0000FF"><b>&nbsp; Fourth Generation Languages (4GLs)</b></font>
+       <TD align="center" width="126"><font color="#0000FF"><b>20</b></font>
+        <TD align="center" width="51"><font color="#0000FF"><b>
+           <INPUT TYPE = "RADIO" NAME = "LanguageField" value="20" onFocus = "promptLanguage()"
+            	   onBlur = "clearStatus()">
+          </b></font>
+    <TR><TD width="272"><font color="#0000FF"><b>&nbsp; Code Generators</b></font>
+        <TD align="center" width="126"><font color="#0000FF"><b>15</b></font>
+        <TD align="center" width="51"><font color="#0000FF"><b>
+           <INPUT TYPE = "RADIO" NAME = "LanguageField" value="15" onFocus = "promptLanguage()"
+            	   onBlur = "clearStatus()">
+          </b></font>
+    <TR><TD width="272"><font color="#0000FF"><b>&nbsp; Spreadsheets</b></font>
+        <TD align="center" width="126"><font color="#0000FF"><b>6</b></font>
+        <TD align="center" width="51"><font color="#0000FF"><b>
+           <INPUT TYPE = "RADIO" NAME = "LanguageField" value="6" onFocus = "promptLanguage()"
+            	   onBlur = "clearStatus()">
+          </b></font>
+
+    <TR><TD width="272"><font color="#0000FF"><b>&nbsp; Graphical Languages (icons)</b></font>
+       <TD align="center" width="126"><font color="#0000FF"><b>4</b></font>
+        <TD align="center" width="51"><font color="#0000FF"><b>
+             <INPUT TYPE = "RADIO" NAME = "LanguageField" value="4" onFocus = "promptLanguage()"
+            	   onBlur = "clearStatus()">
+          </b></font>
+   <!-- Closing the third table.
+    -->
+   </TABLE>
+
+  <BR>&nbsp;&nbsp;&nbsp;&nbsp&nbsp; 
+  <font size="5"><b><font color="#0000FF">LOC/F</font></b><H></font>
+  <b><font color="#0000FF"><font size="5">P: <H> </font> </font></b> 
+  
+  <!-- a button which the user will click to get the LOC/FP based on results the third table and the FP calculated  
+    -->
+  <INPUT TYPE = "BUTTON" Name="LOCFP" VALUE = "Show LOC/FP" onClick = "showLOC()">
+  <font color="#0000FF">
+  <INPUT TYPE = "TEXT" VALUE="" NAME ="LOCTotal" size = 10 onfocus="return unfocus_LOCTotal()">
+  </font>
+  <BR>
+  </center>
+
+  <H2 align="left"> <font face="Andy" size="6" color="#0000FF"><b><i> Step 4:</i></b></font>
+  <b><font color="#0000FF" size="3">  Final Step is to select complexity of the software project:</font></b> </H2>
+  <center>
+  <!-- Creating the last table with its properties
+       Here, the user will choose the type of software project he/she is developing. 
+    -->
+  <TABLE BORDER = 1 BGCOLOR="#FFFFCC" bordercolor="#FFFF00" width="376">
+    <TR BGCOLOR="BLACK">
+      <TH style="background-color: #00FFFF" width="129"> <font color="#0000FF"><b>Software Project</b></font>
+      <TH style="background-color: #00FFFF" width="35" align="center"> <font color="#0000FF"><b>a<sub>b</sub></b></font>
+      <TH style="background-color: #00FFFF" width="38" align="center"> <font color="#0000FF"><b>b<sub>b</sub></b></font>
+      <TH style="background-color: #00FFFF" width="34" align="center"> <font color="#0000FF"><b>c<sub>b</sub></b></font>
+      <TH style="background-color: #00FFFF" width="44" align="center"> <font color="#0000FF"><b>d<sub>b</sub></b></font>
+      <TH style="background-color: #00FFFF" width="56" align="center"> <font color="#0000FF"><b>Select</b></font>     
+    <TR><TD width="129"><font color="#0000FF"><b>Organic</b></font>
+        <TD width="35" align="center"><font color="#0000FF"><b>2.4</b></font>
+        <TD width="38" align="center"><font color="#0000FF"><b>1.05</b></font>
+        <TD width="34" align="center"><font color="#0000FF"><b>2.5</b></font>
+        <TD width="44" align="center"><font color="#0000FF"><b>0.38</b></font>
+        <TD width="56"><font color="#0000FF"><b>&nbsp;&nbsp;&nbsp;&nbsp 
+            <INPUT TYPE = "RADIO" NAME = "typeField" value="1" onFocus = "promptType()" onBlur = "clearStatus()">
+          </b></font>
+
+    <TR><TD width="129"><font color="#0000FF"><b>S</b></font><font color="#0000FF"><b>emi-detached</b></font>
+        <TD width="35" align="center"><font color="#0000FF"><b>3.0</b></font>
+        <TD width="38" align="center"><font color="#0000FF"><b>1.12</b></font>
+        <TD width="34" align="center"><font color="#0000FF"><b>2.5</b></font>
+        <TD width="44" align="center"><font color="#0000FF"><b>0.35</b></font>
+        <TD width="56"><font color="#0000FF"><b>&nbsp;&nbsp;&nbsp;&nbsp 
+            <INPUT TYPE = "RADIO" NAME = "typeField" value="2" onFocus = "promptType()" onBlur = "clearStatus()">
+           </b></font>
+ 
+    <TR><TD width="129"><font color="#0000FF"><b>E</b></font><font color="#0000FF"><b>mbedded</b></font>
+        <TD width="35" align="center"><font color="#0000FF"><b>3.6</b></font>
+        <TD width="38" align="center"><font color="#0000FF"><b>1.20</b></font>
+        <TD width="34" align="center"><font color="#0000FF"><b>2.5</b></font>
+        <TD width="44" align="center"><font color="#0000FF"><b>0.32</b></font>
+        <TD width="56"><font color="#0000FF"><b>&nbsp;&nbsp;&nbsp;&nbsp 
+            <INPUT TYPE = "RADIO" NAME = "typeField" value="3" onFocus = "promptType()" onBlur = "clearStatus()">
+          </b></font>
+   <!-- closing the last table.
+     -->
+   </TABLE>
+  <BR>&nbsp;&nbsp;&nbsp;&nbsp
+  <!-- a button which the user will click to get the final  caluclation of the Effort and the Duration of a software project  
+    --> 
+  <INPUT TYPE = "BUTTON" Name="calculate" VALUE = "Calculate Effort and Duration" onClick = "showE()">
+  <H> <font size="5"> </font>
+  <BR><b><font color="#0000FF">
+  <font size="5">Effort (E) = a<sub>b</sub>(KLOC)<sup>b</sup><sub>b</sub>
+  =</font><H>
+  </font></b>
+  <!-- text boxes where the final results will be stored
+   -->
+  <INPUT TYPE = "TEXT" VALUE="" NAME = "Effort" size = 10 onfocus="return unfocus_Effort()"> &nbsp;&nbsp;&nbsp;&nbsp
+  
+  <H>  <b><font color="#0000FF" size="5">Duration (D) = c<sub>b</sub>(E)<sup>d</sup><sub>b</sub><sup><H></sup>
+  = </font></b> <INPUT TYPE = "TEXT" VALUE="" NAME = "Duration" size = 10 onfocus="return unfocus_Duration()">
+  <BR><BR>
+  <!-- a button which the user can click it to reset all fields on the form
+    -->
+  <INPUT TYPE = "RESET"  Name="Reset" VALUE = "Reset Data"  onClick = "clearStatus()">
+
+  </FORM>
+<!--closing the body
+  -->
+</BODY>
+
+<!-- End of Code.
+  -->
+</HTML>
