@@ -49,6 +49,28 @@
 			
 		}
 
+		public function getUserList(){
+			try{
+				// require './includes/db/connect.php';
+
+				$conn = new connect();
+
+				$connnn = $conn->connect_DB();
+
+				if (!is_null($conn->connString)) {
+					$query = "SELECT * FROM `user`";
+					$result = mysqli_query($conn->connString,$query);
+					if (mysqli_num_rows($result) > 0) {
+						return $result;
+					}else{
+						$this->errors = "No record found.";
+					}
+				}else{
+					$this->errors = "Error while connecting to the database.";
+				}
+			}catch(Exception $e){}
+		}
+
 		public function save(){
 			try{
 				require '../db/connect.php';

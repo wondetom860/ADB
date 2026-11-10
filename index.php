@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html>
 <?php
-    include 'includes/head.php'
-    ?>
+include 'includes/head.php'
+?>
 
 <body>
     <header>
         <?php
-            require 'content/header.php'
-            ?>
+        require 'content/header.php'
+        ?>
     </header>
     <br>
 
@@ -59,7 +59,7 @@
         </div>
         <div class="container-fluid mt-4">
             <div class="row" style="margin-bottom: 10px;">
-                    <div class="col-md-6" id="div_1">
+                <div class="col-md-6" id="div_1">
                     <div class="card bg-default">
                         <div class="card-header" style='text-align: center;'>
                             <h3>Working Area 1</h3>
@@ -67,7 +67,7 @@
                         <div class="card-body" style="border: 1px solid black;">
                             <p class="bg-info" id="workingArea1">Works we are going to implement:</p>
                             <?php
-                                echo "This is ADB class";
+                            echo "This is ADB class";
                             ?>
 
                         </div>
@@ -143,19 +143,84 @@
                 </div>
             </div>
             <div class="row" style="margin-bottom: 10px;">
-                <div class="col-md-12">
+                <div class="col-md-6">
                     <div class="card bg-default">
                         <div class="card-header" style='text-align: center;'>
-                            <h3>Working Area GEN_AK</h3>
+                            <h3>Working Area 5</h3>
                         </div>
                         <div class="card-body">
                             <div class="col-md-12" id="queryForm4">
-                                <button class="btn btn-success btn-sm" onclick="generateAPK();
+                                <button class="btn btn-success btn-sm" onclick="registerCoursesForm();
                                                                                 return false;">
-                                    Generate APK__2021
+                                    Register Course
                                 </button>
                             </div><br>
-                            <div class="col-md-12" id="resultView5">
+                            <div class="col-md-12" id="resultView6">
+
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            @WONDE TOM
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card bg-default">
+                        <div class="card-header" style='text-align: center;'>
+                            <h3>Report Section : Registered Course Information</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="col-md-12" id="queryForm4">
+                                <button class="btn btn-success btn-sm" onclick="viewRegisteredCourses();
+                                                                                return false;">
+                                    Registered Course Information
+                                </button>
+                            </div><br>
+                            <div class="col-md-12" id="resultView7">
+
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            @WONDE TOM
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row" style="margin-bottom: 10px;">
+                <div class="col-md-6">
+                    <div class="card bg-default">
+                        <div class="card-header" style='text-align: center;'>
+                            <h3>Working Area 6</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="col-md-12" id="queryForm4">
+                                <button class="btn btn-success btn-sm" onclick="registerLessonsForm();
+                                                                                return false;">
+                                    Register Lessons
+                                </button>
+                            </div><br>
+                            <div class="col-md-12" id="resultView8">
+
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            @WONDE TOM
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card bg-default">
+                        <div class="card-header" style='text-align: center;'>
+                            <h3>Report Section : Lessons</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="col-md-12" id="queryForm4">
+                                <button class="btn btn-success btn-sm" onclick="viewRegisteredLessons();
+                                                                                return false;">
+                                    View Register Lesson
+                                </button>
+                            </div><br>
+                            <div class="col-md-12" id="resultView9">
 
                             </div>
                         </div>
@@ -176,6 +241,44 @@
 </body>
 
 <script>
+    window.viewRegisteredLessons = function() {
+    $('#resultView9').html('Loading registered course information....');
+    $.post('content/test6.1.php', {}).done(function(data) {
+        $('#resultView9').html(data);
+    });
+}
+
+window.registerLessonsForm = function() {
+    $('#resultView8').html('Loading Lesson registration Form....');
+    $.post('content/test6.php', {}).done(function(data) {
+        $('#resultView8').html(data);
+    });
+};
+
+
+window.viewRegisteredCourses = function() {
+    $('#resultView7').html('Loading registered course information....');
+    $.post('content/test5.1.php', {}).done(function(data) {
+        $('#resultView7').html(data);
+    });
+}
+
+window.registerCoursesForm = function() {
+    $('#resultView6').html('Loading Course registration Form....');
+    $.post('content/test5.php', {}).done(function(data) {
+        $('#resultView6').html(data);
+    });
+};
+
+
+window.registerUser = function() {
+    $('#resultView3').html('Loading User registration Form....');
+    $.post('content/test2.php', {}).done(function(data) {
+        $('#resultView3').html(data);
+    });
+};
+
+
 $('#btn').click(function() {
     $('#div_1').css({
         'backgroundColor': 'red',
@@ -218,15 +321,6 @@ window.ViewUsers = function() {
 window.validateInput = function() {
     return true;
 };
-
-
-window.registerUser = function() {
-    $('#resultView3').html('Loading User registration Form....');
-    $.post('content/test2.php', {}).done(function(data) {
-        $('#resultView3').html(data);
-    });
-};
-
 
 window.connectDb = function() {
     $('#resultView').html('Connecting to database...');

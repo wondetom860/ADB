@@ -21,6 +21,25 @@ class connect {
     var $connString = null;
     
 
+    public function getCouseById($id){
+        $query = "SELECT * FROM course WHERE id={$id}";
+        $result = mysqli_query($this->connString,$query);
+        if (mysqli_num_rows($result) > 0) {
+            return mysqli_fetch_assoc($result);
+        }else{
+            return NULL;
+        }
+    }
+
+    public function getUserById($id){
+        $query = "SELECT * FROM user WHERE id={$id}";
+        $result = mysqli_query($this->connString,$query);
+        if (mysqli_num_rows($result) > 0) {
+            return mysqli_fetch_assoc($result);
+        }else{
+            return NULL;
+        }
+    }
     public function connect_DB($report = NULL) {
         try {
             $this->connString = new MySQLi($this->host, $this->user, $this->password, $this->database);
